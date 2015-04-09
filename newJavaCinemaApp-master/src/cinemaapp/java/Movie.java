@@ -12,9 +12,9 @@ public class Movie {
     private String classification;
     private String directorFName;
     private String directorLName;
-    private String genre;
+    private int genre;
     
-    public Movie(int mid, String t, int my, int rt,String c, String dfn, String dln, String g){
+    public Movie(int mid, String t, int my, int rt,String c, String dfn, String dln, int g){
         this.movieID = mid;
         this.title = t;
         this.movieYear = my;
@@ -24,7 +24,7 @@ public class Movie {
         this.directorLName = dln;
         this.genre = g;
     }
-    public Movie(String t, int my, int rt,String c, String dfn, String dln, String g){
+    public Movie(String t, int my, int rt,String c, String dfn, String dln, int g){
         this(-1, t, my, rt, c, dfn, dln, g);//auto incremented so the user cannot assign an id for movie and they cannot edit it
     }
     
@@ -58,7 +58,7 @@ public class Movie {
         return directorLName;
     }
 
-    public String getGenre() {
+    public int getGenre() {
         return genre;
     }
 
@@ -93,7 +93,7 @@ public class Movie {
         this.directorLName = directorLName;
     }
 
-    public void setGenre(String genre) {
+    public void setGenre(int genre) {
         this.genre = genre;
     }
 }

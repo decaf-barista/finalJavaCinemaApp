@@ -18,15 +18,23 @@ public class Model {
         return instance;
     }
     private List<Screen> screens;
-    private ScreenTableGateway gateway;
+    private ScreenTableGateway screenGateway;
+    private List<Movie> movies;
+    private MovieTableGateway movieGateway;
+    private List<Genre> genres;
+    private GenreTableGateway genreGateway;
     
     private Model(){
         
          try {
             Connection conn = DBConnection.getInstance();
-            this.gateway = new ScreenTableGateway(conn);
+            this.screenGateway = new ScreenTableGateway(conn);
+            this.movieGateway = new MovieTableGateway(conn);
+            this.genreGateway = new GenreTableGateway(conn);
             
-            this.screens = gateway.getScreens();
+            this.screens = screenGateway.getScreens();
+            this.movies = movieGateway.getMovies();
+            this.genres = genreGateway.getGenres();
         } 
         catch (ClassNotFoundException ex) {
             Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex);
@@ -36,12 +44,13 @@ public class Model {
         }
     }
     
+    //Screens/
     public List<Screen> getScreens() {
         return new ArrayList<Screen>(this.screens);
     }
     public void addScreen(Screen s) {
         try {
-            int id = this.gateway.insertScreen(s.getSeatNumbers(), s.getFireExits());
+            int id = this.screenGateway.insertScreen(s.getSeatNumbers(), s.getFireExits());
             s.setId(id);
             
             this.screens.add(s);
@@ -54,7 +63,7 @@ public class Model {
         boolean removed = false;
         
         try{
-            removed = this.gateway.deleteScreen(s.getId());
+            removed = this.screenGateway.deleteScreen(s.getId());
             if(removed){
                 removed = this.screens.remove(s);
             }
@@ -81,12 +90,127 @@ public class Model {
         }
         return s;
     }
-
     boolean updateScreen(Screen s) {
         boolean updated = false;
         
         try{
-            updated = this.gateway.updateScreen(s);
+            updated = this.screenGateway.updateScreen(s);
+        }
+        catch (SQLException ex){
+            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex );
+        }
+        return updated;
+    }
+    
+    //Movies
+    public List<Movie> getMovies() {
+        return new ArrayList<Movie>(this.movies);
+    }
+    public void addMovie(Movie m) {
+        try {
+            int movieID = this.movieGateway.insertMovie(m.getTitle(), m.getMovieYear(), m.getRunTime(), m.getClassification(), m.getDirectorFName(), m.getDirectorLName(), m.getGenre());
+            m.setMovieID(movieID);
+            
+            this.movies.add(m);
+        }
+        catch (SQLException ex){
+            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public boolean removeMovie(Movie m){
+        boolean removed = false;
+        
+        try{
+            removed = this.movieGateway.deleteMovie(m.getMovieID());
+            if(removed){
+                removed = this.movies.remove(m);
+            }
+        }
+        catch (SQLException ex){
+            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex );
+        }
+        return removed;
+    }
+    public Movie findMovieByID(int movieID) {
+        Movie m = null;
+        int i = 0;
+        boolean found = false;
+        while (i < this.movies.size() && !found) {
+            m = this.movies.get(i);
+            if (m.getMovieID() == movieID) {
+                found = true;
+            } else {
+                i++;
+            }
+        }
+        if (!found) {
+            m = null;
+        }
+        return m;
+    }
+    boolean updateMovie(Movie m) {
+        boolean updated = false;
+        
+        try{
+            updated = this.movieGateway.updateMovie(m);
+        }
+        catch (SQLException ex){
+            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex );
+        }
+        return updated;
+    }
+    
+    //Genres
+    public List<Genre> getGenres() {
+        return new ArrayList<Genre>(this.genres);
+    }
+    public void addGenre(Genre g) {
+        try {
+            int genreID = this.genreGateway.insertGenre(g.getGenreName(), g.getDescription());
+            g.setGenreID(genreID);
+            
+            this.genres.add(g);
+        }
+        catch (SQLException ex){
+            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public boolean removeGenre(Genre g){
+        boolean removed = false;
+        
+        try{
+            removed = this.genreGateway.deleteGenre(g.getGenreID());
+            if(removed){
+                removed = this.genres.remove(g);
+            }
+        }
+        catch (SQLException ex){
+            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex );
+        }
+        return removed;
+    }
+    public Genre findGenreByID(int genreID) {
+        Genre g = null;
+        int i = 0;
+        boolean found = false;
+        while (i < this.genres.size() && !found) {
+            g = this.genres.get(i);
+            if (g.getGenreID() == genreID) {
+                found = true;
+            } else {
+                i++;
+            }
+        }
+        if (!found) {
+            g = null;
+        }
+        return g;
+    }
+    boolean updateGenre(Genre g) {
+        boolean updated = false;
+        
+        try{
+            updated = this.genreGateway.updateGenre(g);
         }
         catch (SQLException ex){
             Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex );
