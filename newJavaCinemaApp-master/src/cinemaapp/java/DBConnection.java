@@ -11,10 +11,10 @@ public class DBConnection {
     public static Connection getInstance() throws ClassNotFoundException, SQLException {
         String host, db, user, password;
         
-        host = "localhost";
-        db = "amy";
-        user = "root";
-        password = "";
+        host = "daneel";
+        db = "n00130270";
+        user = "N00130270";
+        password = "N00130270";
         
         if (sConnection == null || sConnection.isClosed()) {
             String url = "jdbc:mysql://" + host + "/" + db;//the url is made by concatinating all of the strings together 
