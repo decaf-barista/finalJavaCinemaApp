@@ -6,12 +6,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 //how i understand the model class is that when i create, update and delete inside this java application the model class contains everything that changes the java application
 public class Model {
     
     private static Model instance = null;
     
-    public static synchronized Model getInstance() {
+    public static synchronized Model getInstance() throws DataAcessException {
         if (instance ==null) {
             instance = new Model();
         }
@@ -24,7 +25,7 @@ public class Model {
     private List<Genre> genres;
     private GenreTableGateway genreGateway;
     
-    private Model(){
+    private Model() throws DataAcessException{
         
          try {
             Connection conn = DBConnection.getInstance();
@@ -37,10 +38,10 @@ public class Model {
             this.genres = genreGateway.getGenres();
         } 
         catch (ClassNotFoundException ex) {
-            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAcessException("Exception initialising model object:" + ex.getMessage());
         } 
         catch (SQLException ex) {
-            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAcessException("Exception initialising model object:" + ex.getMessage());
         }
     }
     
@@ -48,7 +49,7 @@ public class Model {
     public List<Screen> getScreens() {
         return new ArrayList<Screen>(this.screens);
     }
-    public void addScreen(Screen s) {
+    public void addScreen(Screen s) throws DataAcessException {
         try {
             int id = this.screenGateway.insertScreen(s.getSeatNumbers(), s.getFireExits());
             s.setId(id);
@@ -56,10 +57,9 @@ public class Model {
             this.screens.add(s);
         }
         catch (SQLException ex){
-            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            throw new DataAcessException("Exception adding screen:" + ex.getMessage());        }
     }
-    public boolean removeScreen(Screen s){
+    public boolean removeScreen(Screen s) throws DataAcessException{
         boolean removed = false;
         
         try{
@@ -69,7 +69,7 @@ public class Model {
             }
         }
         catch (SQLException ex){
-            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex );
+            throw new DataAcessException("Exception deleting screen:" + ex.getMessage());        
         }
         return removed;
     }
@@ -90,14 +90,14 @@ public class Model {
         }
         return s;
     }
-    boolean updateScreen(Screen s) {
+    boolean updateScreen(Screen s) throws DataAcessException {
         boolean updated = false;
         
         try{
             updated = this.screenGateway.updateScreen(s);
         }
         catch (SQLException ex){
-            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex );
+           throw new DataAcessException("Exception updating screen:" + ex.getMessage());
         }
         return updated;
     }
@@ -106,7 +106,7 @@ public class Model {
     public List<Movie> getMovies() {
         return new ArrayList<Movie>(this.movies);
     }
-    public void addMovie(Movie m) {
+    public void addMovie(Movie m) throws DataAcessException {
         try {
             int movieID = this.movieGateway.insertMovie(m.getTitle(), m.getMovieYear(), m.getRunTime(), m.getClassification(), m.getDirectorFName(), m.getDirectorLName(), m.getGenre());
             m.setMovieID(movieID);
@@ -114,10 +114,10 @@ public class Model {
             this.movies.add(m);
         }
         catch (SQLException ex){
-            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataAcessException("Exception adding movie:" + ex.getMessage());
         }
     }
-    public boolean removeMovie(Movie m){
+    public boolean removeMovie(Movie m) throws DataAcessException{
         boolean removed = false;
         
         try{
@@ -127,7 +127,7 @@ public class Model {
             }
         }
         catch (SQLException ex){
-            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex );
+           throw new DataAcessException("Exception removing movie:" + ex.getMessage());
         }
         return removed;
     }
@@ -148,14 +148,14 @@ public class Model {
         }
         return m;
     }
-    boolean updateMovie(Movie m) {
+    boolean updateMovie(Movie m) throws DataAcessException {
         boolean updated = false;
         
         try{
             updated = this.movieGateway.updateMovie(m);
         }
         catch (SQLException ex){
-            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex );
+            throw new DataAcessException("Exception updating movie:" + ex.getMessage());
         }
         return updated;
     }
@@ -164,7 +164,7 @@ public class Model {
     public List<Genre> getGenres() {
         return new ArrayList<Genre>(this.genres);
     }
-    public void addGenre(Genre g) {
+    public void addGenre(Genre g) throws DataAcessException {
         try {
             int genreID = this.genreGateway.insertGenre(g.getGenreName(), g.getDescription());
             g.setGenreID(genreID);
@@ -172,10 +172,10 @@ public class Model {
             this.genres.add(g);
         }
         catch (SQLException ex){
-            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex);
+           throw new DataAcessException("Exception adding genre:" + ex.getMessage());
         }
     }
-    public boolean removeGenre(Genre g){
+    public boolean removeGenre(Genre g) throws DataAcessException{
         boolean removed = false;
         
         try{
@@ -185,7 +185,7 @@ public class Model {
             }
         }
         catch (SQLException ex){
-            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex );
+           throw new DataAcessException("Exception removing model:" + ex.getMessage());
         }
         return removed;
     }
@@ -206,14 +206,14 @@ public class Model {
         }
         return g;
     }
-    boolean updateGenre(Genre g) {
+    boolean updateGenre(Genre g) throws DataAcessException {
         boolean updated = false;
         
         try{
             updated = this.genreGateway.updateGenre(g);
         }
         catch (SQLException ex){
-            Logger.getLogger(Model.class.getName()).log(Level.SEVERE, null, ex );
+           throw new DataAcessException("Exception updating genre:" + ex.getMessage());
         }
         return updated;
     }

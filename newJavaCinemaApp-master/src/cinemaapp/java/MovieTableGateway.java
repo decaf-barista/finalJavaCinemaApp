@@ -51,7 +51,12 @@ public class MovieTableGateway {
         stmt.setString(4, c);
         stmt.setString(5, dfn);
         stmt.setString(6, dln);
-        stmt.setInt(7, g);
+        if (g == -1) {
+            stmt.setNull(7, java.sql.Types.INTEGER);
+        }
+        else {
+            stmt.setInt(7, g);
+        }
         
         numRowsAffected = stmt.executeUpdate();
         if (numRowsAffected == 1){
@@ -103,6 +108,9 @@ public class MovieTableGateway {
             directorFName = rs.getString(COLUMN_DIRECTOR_F_NAME);
             directorLName = rs.getString(COLUMN_DIRECTOR_L_NAME);
             genre = rs.getInt(COLUMN_GENRE);
+            if (rs.wasNull()) {
+                genre = -1;
+            }
             
             m = new Movie(id, title, movieYear, runTime, classification, directorFName, directorLName, genre);
             movies.add(m);
@@ -114,6 +122,7 @@ public class MovieTableGateway {
         String query; //SQL query to execute
         PreparedStatement stmt; 
         int numRowsAffected;
+        int g;
         
         query = "UPDATE " + TABLE_NAME + " SET " + 
                 COLUMN_TITLE + " = ?, " +
@@ -134,6 +143,13 @@ public class MovieTableGateway {
         stmt.setString(5, m.getDirectorFName());
         stmt.setString(6, m.getDirectorLName());
         stmt.setInt(7, m.getGenre());
+        g = m.getGenre();
+        if (g == -1) {
+            stmt.setNull(7, java.sql.Types.INTEGER);
+        }
+        else {
+            stmt.setInt(7, g);
+        }
         stmt.setInt(8,m.getMovieID());
         
         numRowsAffected = stmt.executeUpdate();
