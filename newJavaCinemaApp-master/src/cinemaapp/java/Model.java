@@ -106,6 +106,15 @@ public class Model {
     public List<Movie> getMovies() {
         return new ArrayList<Movie>(this.movies);
     }
+    public List<Movie> getMoviesByGenre(int genre) {
+        List<Movie> list = new ArrayList<Movie>();
+        for (Movie m : this.movies){
+            if(m.getGenre() == genre){
+                list.add(m);
+            }
+        }
+        return list;
+    }
     public void addMovie(Movie m) throws DataAcessException {
         try {
             int movieID = this.movieGateway.insertMovie(m.getTitle(), m.getMovieYear(), m.getRunTime(), m.getClassification(), m.getDirectorFName(), m.getDirectorLName(), m.getGenre());

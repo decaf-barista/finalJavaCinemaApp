@@ -254,27 +254,36 @@ public class CinemaAppJava {
 
     private static void viewMovies(Model model) {
         List<Movie> movies = model.getMovies();
-        System.out.printf("%8s %20s %10s %12s %14s %30s %20s\n",
-                "Movie ID",
-                "Title",
-                "Movie Year",
-                "Running Time",
-                "Classification",
-                "Director",
-                "Genre");//columns sizes help present the data in a neater way 
-        for (Movie m : movies) {
-            Genre g = model.findGenreByID(m.getGenre());
-            System.out.printf("%8d %20s %10d %12d %14s %30s %20s\n",
-                    m.getMovieID(),
-                    m.getTitle(),
-                    m.getMovieYear(),
-                    m.getRunTime(),
-                    m.getClassification(),
-                    m.getDirectorFName() + " " + m.getDirectorLName(),
-                    (g != null) ? g.getGenreName() : "");
+        if(movies.isEmpty()){
+            System.out.println("There are no movies in the database.");
         }
+        else{
+                displayMovies(movies, model);
+            }
+                
     }
-
+    private static void displayMovies(List<Movie> movies, Model model){
+    
+        System.out.printf("%8s %20s %10s %12s %14s %30s %20s\n",
+                    "Movie ID",
+                    "Title",
+                    "Movie Year",
+                    "Running Time",
+                    "Classification",
+                    "Director",
+                    "Genre");//columns sizes help present the data in a neater way 
+            for (Movie m : movies) {
+                Genre g = model.findGenreByID(m.getGenre());
+                System.out.printf("%8d %20s %10d %12d %14s %30s %20s\n",
+                        m.getMovieID(),
+                        m.getTitle(),
+                        m.getMovieYear(),
+                        m.getRunTime(),
+                        m.getClassification(),
+                        m.getDirectorFName() + " " + m.getDirectorLName(),
+                        (g != null) ? g.getGenreName() : "");
+            }
+    }
     private static void editMovie(Scanner keyboard, Model model) throws DataAcessException {
         int movieID = getInt(keyboard, "Enter the MovieID of the movie to edit:", -1);
 
@@ -419,10 +428,21 @@ public class CinemaAppJava {
 
         Genre g;
         g = model.findGenreByID(genreID);//calls my findGenreByID method
+
         if (g != null) {//returns m, if its null then no id matching was found
             System.out.println("Genre ID:               " + g.getGenreID());
             System.out.println("Name:                   " + g.getGenreName());
             System.out.println("Description:            " + g.getDescription());
+            
+            List<Movie> movieList = model.getMoviesByGenre(g.getGenreID());
+            
+            if(movieList.isEmpty()){
+                System.out.println("There are no movies with this genre.");
+            }
+            else{
+                System.out.println("There movies have this genre:");
+                displayMovies(movieList, model);
+            }
         } else {//no matching id was found
             System.out.println("Genre not found");
         }
